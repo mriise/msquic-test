@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "msquic-test": {
+      "commandName": "Project",
+      "commandLineArgs": "--linger-ms 10 --max-fanout 400 --min-worker-threads 10 --stall-ms 10"
+    }
+  }
+}
