@@ -20,6 +20,7 @@ using Serilog;
 using Serilog.Events;
 using Humanizer;
 using Humanizer.Bytes;
+using System.Security.Cryptography;
 
 #region Protocol
 
@@ -988,10 +989,9 @@ sealed class QuicRelayServer : IAsyncDisposable
 
     static SslServerAuthenticationOptions CreateServerAuth()
     {
-        using var rsa = System.Security.Cryptography.RSA.Create(2048);
+        using var ecdsa = System.Security.Cryptography.ECDsa.Create(ECCurve.NamedCurves.nistP256);
         var req = new System.Security.Cryptography.X509Certificates.CertificateRequest(
-            "CN=localhost", rsa, System.Security.Cryptography.HashAlgorithmName.SHA256,
-            System.Security.Cryptography.RSASignaturePadding.Pkcs1);
+            new X500DistinguishedName("CN=localhost"), ecdsa, System.Security.Cryptography.HashAlgorithmName.SHA256);
         var cert = req.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
         var exported = new X509Certificate2(cert.Export(X509ContentType.Pfx), "",
             X509KeyStorageFlags.Exportable);
